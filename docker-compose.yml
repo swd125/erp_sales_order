@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+#    hostname: pg
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PG_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PG_PASSWORD}
+#      PGADMIN_ENABLE_TLS: 'True'
+#      PGADMIN_LISTEN_PORT: 5050
+    ports:
+       - "5050:80"
+  #  volumes:
+  #    - "/home/ubuntu/ssl/fullchain.pem:/certs/server.cert"
+  #    - "/home/ubuntu/ssl/_.sitearound.com.key:/certs/server.key"
+    networks:
+       - backend
+#    network_mode: "host"
+
+  db:
+    image: postgres:13.7
+    container_name: db
+#    hostname: db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    # volumes:
+    #   - "./configuration/postgresql/:/docker-entrypoint-initdb.d"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
